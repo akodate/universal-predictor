@@ -1,12 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Router, Route, browserHistory } from 'react-router';
 
-const App = () => {
-  return (
-    <div>Model Agency!</div>
-  )
-}
+import App from './components/app';
+
+const routes = (
+  <Router history={browserHistory}>
+    <Route path="/" component={App}>
+    </Route>
+  </Router>
+);
 
 Meteor.startup(() => {
-  ReactDOM.render(<App />, document.querySelector('.render-target'));
+  ReactDOM.render(routes, document.querySelector('.render-target'));
 });
