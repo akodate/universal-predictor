@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
+import { Link, browserHistory } from 'react-router';
 
 const DatasetSelection = () => {
+  // TODO: File upload error handling (wrong filetype, file too large)
+  let display = 'none';
+
   const uploadFile = (event) => {
     const file = event.target.files[0]; 
     console.log(file);
@@ -20,15 +24,23 @@ const DatasetSelection = () => {
     xhr.send(file); 
   };
 
+  const submitDataset = () => {
+    browserHistory.push('/params_selection');
+  }
+
+  // display = 'block';
+  // TODO: Dataset submit error handling (no dataset selected)
+
   return (
     <div className='container dataset_selection_form'>
       <h1 className='text-center heading'>Select your cleaned dataset</h1>
       <form>
         <div className="form-group">
           <input type="file" id="exampleInputFile" onChange={uploadFile} />
+          <p style={{display: display}}>ERROR</p>
           <em className="help-block small">(CSV only. Max file size is **MB)</em>
         </div>
-      <button type="button" className="btn btn-lg btn-success center-block">Next</button>
+      <button type="button" className="btn btn-lg btn-success center-block" onClick={submitDataset}>Next</button>
       </form>
     </div>
   );
