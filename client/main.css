@@ -5,15 +5,15 @@
   width: 800px;
 }
 
-.body {
-  background-color: blue;
-}
-
-.dataset_selection_form {
+.dataset-selection-form {
   padding: 20px 0px 50px 0px;
   width: 470px;
 }
 
 .heading {
   padding: 30px 0px;
+}
+
+.param {
+  margin: 0 10px;
 }

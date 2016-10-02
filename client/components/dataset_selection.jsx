@@ -26,13 +26,13 @@ const DatasetSelection = () => {
 
   const submitDataset = () => {
     browserHistory.push('/params_selection');
-  }
+  };
 
   // display = 'block';
   // TODO: Dataset submit error handling (no dataset selected)
 
   return (
-    <div className='container dataset_selection_form'>
+    <div className='container dataset-selection-form'>
       <h1 className='text-center heading'>Select your cleaned dataset</h1>
       <form>
         <div className="form-group">
