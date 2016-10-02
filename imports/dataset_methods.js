@@ -2,6 +2,7 @@ import fs from 'fs';
 import parse from 'csv-parse';
 import path from 'path';
 import Future from 'fibers/future';
+import { spawn } from 'child_process';
 
 Meteor.methods({
   // Uses futures to asynchronously read, write, parse, and return the column names
@@ -17,6 +18,22 @@ Meteor.methods({
     dataset_path = path.resolve('../../../../../datasets~/test.csv');
     console.log('Dataset path to get column names from:', dataset_path);
     fs.createReadStream(dataset_path).pipe(parser);
+    return future.wait();
+  },
+
+  'runPython': function(scriptName, target, time) {
+    const future = new Future();
+    dataset_path = path.resolve('../../../../../datasets~/test.csv');
+    script_path = path.resolve('../../../../../imports/python_scripts/' + scriptName);
+    console.log('Running Python script named', scriptName, 'at', script_path);
+
+    const process = spawn('python', [script_path, target, time]);
+
+    process.stdout.on('data', function (data){
+      parsedData = data.toString();
+      future.return(parsedData);
+    });
+
     return future.wait();
   }
 });

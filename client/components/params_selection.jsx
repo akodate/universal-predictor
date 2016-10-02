@@ -23,6 +23,20 @@ class ParamsSelection extends Component {
     });
   }
 
+  runPythonScript(event) {
+    event.preventDefault();
+    const target = this.refs.target.value
+    const time = this.refs.time.value    
+
+    Meteor.call('runPython', 'test.py', target, time, (error, result) => {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+  }
+
   renderColumnNames() {
     return this.state.colNames.map(colName => {
 
@@ -49,31 +63,24 @@ class ParamsSelection extends Component {
       <div className='container dataset-selection-form'>
         <h1 className='text-center heading'>Select model parameters</h1>
 
-        <div className="form-group" // Double form-group for proper styling
-        >
-          <form className="form-inline">
-            <div className="form-group">
+        <form onSubmit={(event) => this.runPythonScript(event)}>
+          <div className="form-group">
+            <div className="form-inline param">
               <label htmlFor="target-selector">Target to predict:</label>
-              <select className="form-control param" id="target-selector">
+              <select ref='target' className="form-control param" id="target-selector">
                 {this.renderColumnNames()}
               </select>
             </div>
-          </form>
-        </div>
-
-        <div className="form-group"
-        >
-          <form className="form-inline">
-            <div className="form-group">
+            <div className="form-inline param">
               <label htmlFor="time-selector">Seconds to train model:</label>
-              <select className="form-control param" id="time-selector">
+              <select ref='time' className="form-control param" id="time-selector">
                 {this.renderTimeOptions()}
               </select>
-            </div>
-          </form>
-        </div>
+            </div>                 
+          </div>
+          <input type="submit" value="Create model!" className="btn btn-lg btn-success center-block" />
+        </form>
 
-        <button type="button" className="btn btn-lg btn-success center-block">Create model!</button>
       </div>
     );
   }
