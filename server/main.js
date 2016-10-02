@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import parse from 'csv-parse';
 
 // Saves file sent by file input in DataSelection component
 // TO DO: Create file and folder if they don't exist yet
@@ -19,3 +20,14 @@ WebApp.connectHandlers.use('/upload',function(req,res){
 
   req.pipe(file);
 });
+
+
+
+const parser = parse({delimiter: ';'}, function(err, data){
+  colnames = data[0][0].split(',');
+  console.log(colnames);
+});
+
+dataset_path = path.resolve('../../../../../datasets~/test.csv');
+console.log('Path:', dataset_path);
+fs.createReadStream(dataset_path).pipe(parser);

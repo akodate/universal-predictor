@@ -24,7 +24,7 @@ const DatasetSelection = () => {
     xhr.send(file); 
   };
 
-  const submitDataset = () => {
+  const goToParamsSelection = () => {
     browserHistory.push('/params_selection');
   };
 
@@ -40,7 +40,7 @@ const DatasetSelection = () => {
           <p style={{display: display}}>ERROR</p>
           <em className="help-block small">(CSV only. Max file size is **MB)</em>
         </div>
-      <button type="button" className="btn btn-lg btn-success center-block" onClick={submitDataset}>Next</button>
+      <button type="button" className="btn btn-lg btn-success center-block" onClick={goToParamsSelection}>Next</button>
       </form>
     </div>
   );
