@@ -10,9 +10,9 @@ WebApp.connectHandlers.use('/upload',function(req,res){
   console.log("Writing dataset to", dataset_path);
   let file = fs.createWriteStream(dataset_path); 
 
-  file.on('error',function(error){
-    console.log(error);
-  });
+  // file.on('error',function(error){
+  //   console.log(error);
+  // });
   file.on('finish',function(){
     res.writeHead(200) 
     res.end();

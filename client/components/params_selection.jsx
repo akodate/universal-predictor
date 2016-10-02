@@ -28,7 +28,7 @@ class ParamsSelection extends Component {
     const target = this.refs.target.value
     const time = this.refs.time.value    
 
-    Meteor.call('runPython', 'test.py', target, time, (error, result) => {
+    Meteor.call('runPython', 'automl.py', target, time, (error, result) => {
       if (error) {
         console.log(error);
       } else {

@@ -24,13 +24,19 @@ Meteor.methods({
   'runPython': function(scriptName, target, time) {
     const future = new Future();
     dataset_path = path.resolve('../../../../../datasets~/test.csv');
+    python_path = '/Users/alex/anaconda/envs/p3/bin/python'
     script_path = path.resolve('../../../../../imports/python_scripts/' + scriptName);
     console.log('Running Python script named', scriptName, 'at', script_path);
 
-    const process = spawn('python', [script_path, target, time]);
+    const proc = spawn(python_path, [script_path, target, time]);
 
-    process.stdout.on('data', function (data){
+    proc.stdout.on('data', function (data){
       parsedData = data.toString();
+      console.log(parsedData);
+    });
+
+    proc.stdout.on('end', () => {
+      console.log('Finished reading output from Python.');
       future.return(parsedData);
     });
 
