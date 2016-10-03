@@ -26,7 +26,8 @@ class ParamsSelection extends Component {
   runPythonScript(event) {
     event.preventDefault();
     const target = this.refs.target.value
-    const time = this.refs.time.value    
+    const time = this.refs.time.value  
+    console.log('Running python script...')  
 
     Meteor.call('runPython', 'automl.py', target, time, (error, result) => {
       if (error) {

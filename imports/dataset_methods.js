@@ -15,20 +15,20 @@ Meteor.methods({
       future.return(colNames);
     });
 
-    dataset_path = path.resolve('../../../../../datasets~/test.csv');
-    console.log('Dataset path to get column names from:', dataset_path);
-    fs.createReadStream(dataset_path).pipe(parser);
+    const datasetPath = path.resolve('../../../../../datasets~/test.csv');
+    console.log('Dataset path to get column names from:', datasetPath);
+    fs.createReadStream(datasetPath).pipe(parser);
     return future.wait();
   },
 
   'runPython': function(scriptName, target, time) {
     const future = new Future();
-    dataset_path = path.resolve('../../../../../datasets~/test.csv');
-    python_path = '/Users/alex/anaconda/envs/p3/bin/python'
-    script_path = path.resolve('../../../../../imports/python_scripts/' + scriptName);
-    console.log('Running Python script named', scriptName, 'at', script_path);
+    const datasetPath = path.resolve('../../../../../datasets~/test.csv');
+    const pythonPath = '/Users/alex/anaconda/envs/p3/bin/python'
+    const scriptPath = path.resolve('../../../../../imports/python_scripts/' + scriptName);
+    console.log('Running Python script named', scriptName, 'at', scriptPath);
 
-    const proc = spawn(python_path, [script_path, target, time]);
+    const proc = spawn(pythonPath, [scriptPath, datasetPath, target, time]);
 
     proc.stdout.on('data', function (data){
       parsedData = data.toString();
