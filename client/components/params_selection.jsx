@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Results from './results';
 
 class ParamsSelection extends Component {
 
@@ -81,6 +82,8 @@ class ParamsSelection extends Component {
           </div>
           <input type="submit" value="Create model!" className="btn btn-lg btn-success center-block" />
         </form>
+
+        <Results />
 
       </div>
     );
