@@ -60,10 +60,14 @@ try:
   df = pd.read_csv(csv_path)
 
   orig_dtypes = df.dtypes
+  predictor_types = []
 
   for col in df.columns.difference([target]):
-      if not np.issubdtype(df[col], np.number):
-          df[col] = LabelEncoder().fit_transform(df[col])
+    if not np.issubdtype(df[col], np.number):
+      predictor_types.append('categorical')
+      df[col] = LabelEncoder().fit_transform(df[col])
+    else:
+      predictor_types.append('numerical')
 
   X = df.drop(target, axis=1)
   y = df[target]
