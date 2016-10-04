@@ -1,13 +1,62 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import ReactHighcharts from 'react-highcharts';
+require('highcharts-more')(ReactHighcharts.Highcharts);
+require('highcharts-heatmap')(ReactHighcharts.Highcharts);
 
 const config = {
-  xAxis: {
-    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  chart: {
+      type: 'heatmap',
+      marginTop: 40,
+      marginBottom: 80,
+      plotBorderWidth: 1
   },
+
+  title: {
+      text: 'Confusion Matrix'
+  },
+
+  xAxis: {
+      categories: ['0', '1'],
+      title: 'Predicted label'
+  },
+
+  yAxis: {
+      categories: ['0', '1'],
+      title: {
+        text: 'True label'
+      }
+  },
+
+  colorAxis: {
+      min: 0,
+      minColor: '#FFFFFF',
+      maxColor: ReactHighcharts.Highcharts.getOptions().colors[0]
+  },
+
+  legend: {
+      align: 'right',
+      layout: 'vertical',
+      margin: 0,
+      verticalAlign: 'top',
+      y: 25,
+      symbolHeight: 280
+  },
+
+  tooltip: {
+      formatter: function () {
+          return this.point.value;
+      }
+  },
+
   series: [{
-    data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 295.6, 454.4]
+      name: 'Predicted vs. Actual Classes',
+      borderWidth: 1,
+      data: [[0, 0, 10], [0, 1, 19], [1, 0, 8], [1, 1, 24]],
+      dataLabels: {
+          enabled: true,
+          color: '#000000'
+      }
   }]
 };
 
@@ -16,7 +65,6 @@ const Results = () => {
     <div>
       <div>RESULTS</div>
       <ReactHighcharts config={config}></ReactHighcharts>
-      <div id="test"></div>
     </div>
   );
 };
