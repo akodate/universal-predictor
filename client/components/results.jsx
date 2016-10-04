@@ -4,63 +4,66 @@ import ReactHighcharts from 'react-highcharts';
 require('highcharts-more')(ReactHighcharts.Highcharts);
 require('highcharts-heatmap')(ReactHighcharts.Highcharts);
 
-const config = {
-  chart: {
-      type: 'heatmap',
-      marginTop: 40,
-      marginBottom: 80,
-      plotBorderWidth: 1
-  },
+const Results = (props) => {
+  const labels = props.results.labels;
+  const config = {
+    chart: {
+        type: 'heatmap',
+        marginTop: 40,
+        marginBottom: 80,
+        plotBorderWidth: 1
+    },
 
-  title: {
-      text: 'Confusion Matrix'
-  },
+    title: {
+        text: 'Confusion Matrix'
+    },
 
-  xAxis: {
-      categories: ['0', '1'],
-      title: 'Predicted label'
-  },
+    xAxis: {
+        categories: labels,
+        title: {
+          text: 'Predicted label'
+        }
+    },
 
-  yAxis: {
-      categories: ['0', '1'],
-      title: {
-        text: 'True label'
-      }
-  },
+    yAxis: {
+        categories: labels,
+        title: {
+          text: 'True label'
+        }
+    },
 
-  colorAxis: {
-      min: 0,
-      minColor: '#FFFFFF',
-      maxColor: ReactHighcharts.Highcharts.getOptions().colors[0]
-  },
+    colorAxis: {
+        min: 0,
+        minColor: '#FFFFFF',
+        maxColor: ReactHighcharts.Highcharts.getOptions().colors[0]
+    },
 
-  legend: {
-      align: 'right',
-      layout: 'vertical',
-      margin: 0,
-      verticalAlign: 'top',
-      y: 25,
-      symbolHeight: 280
-  },
+    legend: {
+        align: 'right',
+        layout: 'vertical',
+        margin: 0,
+        verticalAlign: 'top',
+        y: 25,
+        symbolHeight: 280
+    },
 
-  tooltip: {
-      formatter: function () {
-          return this.point.value;
-      }
-  },
+    tooltip: {
+        formatter: function () {
+            return this.point.value;
+        }
+    },
 
-  series: [{
-      name: 'Predicted vs. Actual Classes',
-      borderWidth: 1,
-      data: [[0, 0, 10], [0, 1, 19], [1, 0, 8], [1, 1, 24]],
-      dataLabels: {
-          enabled: true,
-          color: '#000000'
-      }
-  }]
-};
+    series: [{
+        name: 'Predicted vs. Actual Classes',
+        borderWidth: 1,
+        data: [[0, 0, 10], [0, 1, 19], [1, 0, 8], [1, 1, 24]],
+        dataLabels: {
+            enabled: true,
+            color: '#000000'
+        }
+    }]
+  };
 
-const Results = () => {
   return (
     <div>
       <div>RESULTS</div>

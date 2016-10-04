@@ -5,6 +5,7 @@ from sklearn.cross_validation import train_test_split
 from sklearn.preprocessing import LabelEncoder
 import autosklearn.classification
 import textwrap
+import json
 
 def format_info(csv_path, target, time, df, test_set_size, orig_dtypes):
   info = """
@@ -35,8 +36,8 @@ def format_results(score, predictions, y_test, probas):
   results = """
     ---RESULTS---
     Score: {score}
-    Predictions (first 20): {predictions}
-    Actual values (first 20):", {y_test}
+    Predictions (first 20):   {predictions}
+    Actual values (first 20): {y_test}
     Prediction probabilities (first 5): 
     {probas}
   """
@@ -88,8 +89,14 @@ try:
   predictions = automl.predict(X_test)
   probas = automl.predict_proba(X_test)
 
-  print(format_info(csv_path, target, time, df, test_set_size, orig_dtypes))
-  print(format_results(score, predictions, y_test, probas))
+  print(json.dumps({
+    'info_log': format_info(csv_path, target, time, df, test_set_size, orig_dtypes),
+    'results_log': format_results(score, predictions, y_test, probas),
+    'results': {
+      'predictions': [0, 1, 0, 1], 
+      'true_values': [0, 0, 0, 1]
+    }
+  }))
 
 except Exception as e:
   print(format_info(csv_path, target, time, df, test_set_size, orig_dtypes))

@@ -31,13 +31,13 @@ Meteor.methods({
     const proc = spawn(pythonPath, [scriptPath, datasetPath, target, time]);
 
     proc.stdout.on('data', function (data){
-      parsedData = data.toString();
-      console.log(parsedData);
+      rawData = data.toString();
+      console.log(rawData);
     });
 
     proc.stdout.on('end', () => {
       console.log('Finished reading output from Python.');
-      future.return(parsedData);
+      future.return(JSON.parse(rawData));
     });
 
     return future.wait();

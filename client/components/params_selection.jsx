@@ -6,7 +6,13 @@ class ParamsSelection extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { colNames: [] };
+    this.state = { 
+      colNames: [], 
+      results: {
+        labels: ["Survived", "Perished"], 
+        results: [[24, 35], [16, 48]]
+      }
+    };
   }
 
   componentDidMount() {
@@ -34,7 +40,9 @@ class ParamsSelection extends Component {
       if (error) {
         console.log(error);
       } else {
-        console.log(result);
+        console.log(result.info_log);
+        console.log(result.results_log);
+        console.log(result.results);
       }
     });
   }
@@ -83,7 +91,7 @@ class ParamsSelection extends Component {
           <input type="submit" value="Create model!" className="btn btn-lg btn-success center-block" />
         </form>
 
-        <Results />
+        <Results results={this.state.results}/>
 
       </div>
     );
