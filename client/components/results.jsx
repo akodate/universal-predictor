@@ -5,7 +5,17 @@ require('highcharts-more')(ReactHighcharts.Highcharts);
 require('highcharts-heatmap')(ReactHighcharts.Highcharts);
 
 const Results = (props) => {
-  const labels = props.results.labels;
+  results = props.location.state
+  const labels = results.classNames;
+
+  // Formats (pre-transformed) confusion matrix as chart data
+  let chartData = [];
+  for (let [i, col] of results.cnfMatrix.entries()) {
+    for (let [i2, x] of col.entries()) {
+      chartData.push([i, i2, x]);
+    }
+  }
+
   const config = {
     chart: {
         type: 'heatmap',
@@ -21,14 +31,14 @@ const Results = (props) => {
     xAxis: {
         categories: labels,
         title: {
-          text: 'Predicted label'
+          text: 'Predicted class'
         }
     },
 
     yAxis: {
         categories: labels,
         title: {
-          text: 'True label'
+          text: 'True class'
         }
     },
 
@@ -49,14 +59,15 @@ const Results = (props) => {
 
     tooltip: {
         formatter: function () {
-            return this.point.value;
+            return '<b>' + this.point.value + '</b> actually <b>' + this.series.yAxis.categories[this.point.y] + 
+            '</b>, predicted as <b>' + this.series.xAxis.categories[this.point.x] + '</b>';
         }
     },
 
     series: [{
         name: 'Predicted vs. Actual Classes',
         borderWidth: 1,
-        data: [[0, 0, 10], [0, 1, 19], [1, 0, 8], [1, 1, 24]],
+        data: chartData,
         dataLabels: {
             enabled: true,
             color: '#000000'
@@ -66,7 +77,6 @@ const Results = (props) => {
 
   return (
     <div>
-      <div>RESULTS</div>
       <ReactHighcharts config={config}></ReactHighcharts>
     </div>
   );

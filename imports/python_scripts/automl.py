@@ -4,6 +4,7 @@ import numpy as np
 from sklearn.cross_validation import train_test_split
 from sklearn.preprocessing import LabelEncoder
 import autosklearn.classification
+from sklearn.metrics import confusion_matrix
 import textwrap
 import json
 
@@ -73,6 +74,8 @@ try:
   X = df.drop(target, axis=1)
   y = df[target]
 
+  class_names = np.unique(y)
+
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_set_size)
 
   X_train = np.ascontiguousarray(X_train)
@@ -89,18 +92,22 @@ try:
   predictions = automl.predict(X_test)
   probas = automl.predict_proba(X_test)
 
+  print("***JSON***", flush=True)
   print(json.dumps({
     'info_log': format_info(csv_path, target, time, df, test_set_size, orig_dtypes),
     'results_log': format_results(score, predictions, y_test, probas),
     'results': {
-      'predictions': [0, 1, 0, 1], 
-      'true_values': [0, 0, 0, 1]
+      'score': score,
+      'trueValues': y_test.tolist(),
+      'predictions': predictions.tolist(),
+      'probas': probas.tolist(),
+      'classNames': class_names.tolist(),
+      'cnfMatrix': np.rot90(np.fliplr(confusion_matrix(y_test, predictions))).tolist()
     }
-  }))
+  }), flush=True)
 
 except Exception as e:
   print(format_info(csv_path, target, time, df, test_set_size, orig_dtypes))
   print("Error occurred.")
   print(e)
-
-sys.stdout.flush()
+  sys.stdout.flush()

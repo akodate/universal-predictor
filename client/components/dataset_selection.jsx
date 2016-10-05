@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link, browserHistory } from 'react-router';
+import { browserHistory } from 'react-router';
 
 const DatasetSelection = () => {
   // TODO: File upload error handling (wrong filetype, file too large)

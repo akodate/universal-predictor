@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { browserHistory } from 'react-router';
+
 import Results from './results';
 
 class ParamsSelection extends Component {
@@ -8,10 +10,7 @@ class ParamsSelection extends Component {
 
     this.state = { 
       colNames: [], 
-      results: {
-        labels: ["Survived", "Perished"], 
-        results: [[24, 35], [16, 48]]
-      }
+      results: {}
     };
   }
 
@@ -43,6 +42,11 @@ class ParamsSelection extends Component {
         console.log(result.info_log);
         console.log(result.results_log);
         console.log(result.results);
+        this.setState({ results: result.results });
+        browserHistory.push({
+          pathname: '/results', 
+          state: result.results
+        });
       }
     });
   }
@@ -90,8 +94,6 @@ class ParamsSelection extends Component {
           </div>
           <input type="submit" value="Create model!" className="btn btn-lg btn-success center-block" />
         </form>
-
-        <Results results={this.state.results}/>
 
       </div>
     );
