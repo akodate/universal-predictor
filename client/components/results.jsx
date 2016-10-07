@@ -18,11 +18,28 @@ const Results = (props) => {
   );
 
   // Formats confusion matrix as chart data
-  let chartData = [];
+  let cnfMatrixData = [];
   for (let [i, col] of results.cnfMatrix.entries()) {
     for (let [i2, x] of col.entries()) {
-      chartData.push([i, i2, x]);
+      cnfMatrixData.push([i, i2, x]);
     }
+  }
+
+  // Changes the fpr and tpr arrays into (rounded) coordinate arrays for the ROC curve chart...
+  let rocCurveData = [];
+  for (let [fprArr, tprArr] of _.zip(results.fpr, results.tpr)) {
+    coordArr = []
+    for (let [x, y] of _.zip(fprArr, tprArr)) {
+      coordArr.push([
+        (Math.round(x * 1e3) / 1e3),
+        (Math.round(y * 1e3) / 1e3)
+      ]);
+    }
+    rocCurveData.push({ data: coordArr });
+  }
+  // ...then adds class name to the chart data
+  for (let [i, category] of rocCurveData.entries()) {
+    rocCurveData[i]['name'] = results.classNames[i];
   }
 
   const renderClassificationReport = () => {
@@ -39,7 +56,7 @@ const Results = (props) => {
     });
   };
 
-  const config = {
+  const cnfMatrixConfig = {
     chart: {
         type: 'heatmap',
         marginTop: 40,
@@ -90,7 +107,7 @@ const Results = (props) => {
     series: [{
         name: 'Predicted vs. Actual Classes',
         borderWidth: 1,
-        data: chartData,
+        data: cnfMatrixData,
         dataLabels: {
             enabled: true,
             color: '#000000'
@@ -98,20 +115,57 @@ const Results = (props) => {
     }]
   };
 
+  const rocCurveConfig = {
+    title: {
+        text: 'ROC Curve',
+        x: -20 //center
+    },
+    xAxis: {
+        title: {
+            text: 'False Positive Rate'
+        }
+    },
+    yAxis: {
+        title: {
+            text: 'True Positive Rate'
+        },
+        plotLines: [{
+            value: 0,
+            width: 1,
+            color: '#808080'
+        }]
+    },
+    tooltip: {
+        valueSuffix: ''
+    },
+    legend: {
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'middle',
+        borderWidth: 0
+    },
+    series: rocCurveData
+  }
+
   return (
     <div className="model-stats">
-      <ul className="list-unstyled">
-        <li><h2><em>Model accuracy: </em>{roundedScore}</h2></li>
-        <li><h2><em>Baseline accuracy: </em>{roundedBaselineAcc}</h2></li>
-      </ul>
 
+      <h1>Results</h1>
+      <hr />
+      <ul className="list-unstyled">
+        <li><h3>Model accuracy — <strong>{roundedScore}</strong></h3></li>
+        <li><h3>Baseline accuracy — <strong>{roundedBaselineAcc}</strong></h3></li>
+      </ul>
+      <hr />
+
+      <h4>Classification report:</h4>
       <table className="table table-bordered">
         <thead>
           <tr>
             <th>Class</th>
             <th>Precision</th>
             <th>Recall</th>
-            <th>F1 score</th>
+            <th>F1 Score</th>
             <th>Support</th>
           </tr>
         </thead>      
@@ -121,7 +175,9 @@ const Results = (props) => {
       </table>
 
       <hr />
-      <ReactHighcharts config={config}></ReactHighcharts>
+      <ReactHighcharts config={cnfMatrixConfig}></ReactHighcharts>
+      <ReactHighcharts config={rocCurveConfig}></ReactHighcharts>
+
     </div>
   );
 };

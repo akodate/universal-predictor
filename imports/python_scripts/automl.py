@@ -2,11 +2,10 @@ import sys
 import pandas as pd
 import numpy as np
 from sklearn.cross_validation import train_test_split
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoder, label_binarize
 import autosklearn.classification
 from scipy.stats import mode
-from sklearn.metrics import precision_recall_fscore_support
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import precision_recall_fscore_support, roc_curve, auc, confusion_matrix
 import textwrap
 import json
 
@@ -52,6 +51,21 @@ def format_results(score, predictions, y_test, probas):
     probas = "\n    ".join([str(proba) for proba in probas[0:5]])
   ))
 
+def get_ROC_values(class_names, y_test):
+  encoded_class_names = range(len(class_names))
+  y_bin = label_binarize(y_test, classes=encoded_class_names)
+
+  # Compute ROC curve and ROC area for each class
+  fpr = []
+  tpr = []
+  roc_auc = []
+  for i in encoded_class_names:
+    f, t, _ = roc_curve(y_bin[:, i], probas[:, i])
+    fpr.append(f.tolist())
+    tpr.append(t.tolist())
+    roc_auc.append(auc(f, t))
+  return fpr, tpr, roc_auc
+
 
 
 csv_path = sys.argv[1]
@@ -96,6 +110,7 @@ try:
 
   baseline_acc = (mode(y_test)[1] / len(y_test))[0]
   precRecFscoreSupport = precision_recall_fscore_support(y_test, predictions)
+  fpr, tpr, roc_auc = get_ROC_values(class_names, y_test)
 
   print("***JSON***", flush=True)
   print(json.dumps({
@@ -109,7 +124,10 @@ try:
       'probas': probas.tolist(),
       'classNames': class_names.tolist(),
       'precRecFscoreSupport': np.rot90(np.fliplr(precRecFscoreSupport)).tolist(),
-      'cnfMatrix': np.rot90(np.fliplr(confusion_matrix(y_test, predictions))).tolist()
+      'cnfMatrix': np.rot90(np.fliplr(confusion_matrix(y_test, predictions))).tolist(),
+      'fpr': fpr,
+      'tpr': tpr,
+      'roc_auc': roc_auc
     }
   }), flush=True)
 
