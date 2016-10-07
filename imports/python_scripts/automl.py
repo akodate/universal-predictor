@@ -4,6 +4,8 @@ import numpy as np
 from sklearn.cross_validation import train_test_split
 from sklearn.preprocessing import LabelEncoder
 import autosklearn.classification
+from scipy.stats import mode
+from sklearn.metrics import precision_recall_fscore_support
 from sklearn.metrics import confusion_matrix
 import textwrap
 import json
@@ -92,16 +94,21 @@ try:
   predictions = automl.predict(X_test)
   probas = automl.predict_proba(X_test)
 
+  baseline_acc = (mode(y_test)[1] / len(y_test))[0]
+  precRecFscoreSupport = precision_recall_fscore_support(y_test, predictions)
+
   print("***JSON***", flush=True)
   print(json.dumps({
     'info_log': format_info(csv_path, target, time, df, test_set_size, orig_dtypes),
     'results_log': format_results(score, predictions, y_test, probas),
     'results': {
       'score': score,
+      'baselineAcc': baseline_acc,
       'trueValues': y_test.tolist(),
       'predictions': predictions.tolist(),
       'probas': probas.tolist(),
       'classNames': class_names.tolist(),
+      'precRecFscoreSupport': np.rot90(np.fliplr(precRecFscoreSupport)).tolist(),
       'cnfMatrix': np.rot90(np.fliplr(confusion_matrix(y_test, predictions))).tolist()
     }
   }), flush=True)

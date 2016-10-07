@@ -5,16 +5,39 @@ require('highcharts-more')(ReactHighcharts.Highcharts);
 require('highcharts-heatmap')(ReactHighcharts.Highcharts);
 
 const Results = (props) => {
-  results = props.location.state
-  const labels = results.classNames;
+  const results = props.location.state
 
-  // Formats (pre-transformed) confusion matrix as chart data
+  const roundedScore = results.score.toFixed(3)
+  const roundedBaselineAcc = results.baselineAcc.toFixed(3)
+
+  // Rounds precision, recall, and Fscore to 3 decimal places, then support to 0 decimal places
+  const roundedPrecRecFscoreSupport = results.precRecFscoreSupport.map(
+    row => row.slice(0, 3).map(
+      x => x.toFixed(3)
+    ).concat(row[3].toFixed(0))
+  );
+
+  // Formats confusion matrix as chart data
   let chartData = [];
   for (let [i, col] of results.cnfMatrix.entries()) {
     for (let [i2, x] of col.entries()) {
       chartData.push([i, i2, x]);
     }
   }
+
+  const renderClassificationReport = () => {
+    return roundedPrecRecFscoreSupport.map((pRFS, i) => {
+      return (
+        <tr key={i}>
+          <td><strong>{results.classNames[i]}</strong></td>
+          <td>{pRFS[0]}</td>
+          <td>{pRFS[1]}</td>
+          <td>{pRFS[2]}</td>
+          <td>{pRFS[3]}</td>
+        </tr> 
+      );     
+    });
+  };
 
   const config = {
     chart: {
@@ -29,16 +52,16 @@ const Results = (props) => {
     },
 
     xAxis: {
-        categories: labels,
+        categories: results.classNames,
         title: {
-          text: 'Predicted class'
+          text: '<b>Predicted class</b>'
         }
     },
 
     yAxis: {
-        categories: labels,
+        categories: results.classNames,
         title: {
-          text: 'True class'
+          text: '<b>True class</b>'
         }
     },
 
@@ -59,8 +82,8 @@ const Results = (props) => {
 
     tooltip: {
         formatter: function () {
-            return '<b>' + this.point.value + '</b> actually <b>' + this.series.yAxis.categories[this.point.y] + 
-            '</b>, predicted as <b>' + this.series.xAxis.categories[this.point.x] + '</b>';
+            return '<strong>' + this.point.value + '</strong> predicted as class <strong>' + this.series.xAxis.categories[this.point.x] + '</strong><br>' + 
+             'that are actually class <strong>' + this.series.yAxis.categories[this.point.y] + '</strong>';
         }
     },
 
@@ -76,7 +99,28 @@ const Results = (props) => {
   };
 
   return (
-    <div>
+    <div className="model-stats">
+      <ul className="list-unstyled">
+        <li><h2><em>Model accuracy: </em>{roundedScore}</h2></li>
+        <li><h2><em>Baseline accuracy: </em>{roundedBaselineAcc}</h2></li>
+      </ul>
+
+      <table className="table table-bordered">
+        <thead>
+          <tr>
+            <th>Class</th>
+            <th>Precision</th>
+            <th>Recall</th>
+            <th>F1 score</th>
+            <th>Support</th>
+          </tr>
+        </thead>      
+        <tbody>
+          {renderClassificationReport()}
+        </tbody>
+      </table>
+
+      <hr />
       <ReactHighcharts config={config}></ReactHighcharts>
     </div>
   );

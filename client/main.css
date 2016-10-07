@@ -2,6 +2,7 @@
   border-style: solid;
   border-width: 5px;
   margin-top: 100px;
+  margin-bottom: 20px;
   width: 800px;
 }
 
@@ -12,6 +13,10 @@
 
 .heading {
   padding: 30px 0px;
+}
+
+.model-stats {
+  padding: 15px 60px 10px;
 }
 
 .param {
