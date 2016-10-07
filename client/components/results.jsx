@@ -5,10 +5,11 @@ require('highcharts-more')(ReactHighcharts.Highcharts);
 require('highcharts-heatmap')(ReactHighcharts.Highcharts);
 
 const Results = (props) => {
-  const results = props.location.state
+  const results = props.location.state;
+  let classNames = results.classNames;
 
-  const roundedScore = results.score.toFixed(3)
-  const roundedBaselineAcc = results.baselineAcc.toFixed(3)
+  const roundedScore = results.score.toFixed(3);
+  const roundedBaselineAcc = results.baselineAcc.toFixed(3);
 
   // Rounds precision, recall, and Fscore to 3 decimal places, then support to 0 decimal places
   const roundedPrecRecFscoreSupport = results.precRecFscoreSupport.map(
@@ -25,28 +26,34 @@ const Results = (props) => {
     }
   }
 
-  // Changes the fpr and tpr arrays into (rounded) coordinate arrays for the ROC curve chart...
   let rocCurveData = [];
-  for (let [fprArr, tprArr] of _.zip(results.fpr, results.tpr)) {
-    coordArr = []
-    for (let [x, y] of _.zip(fprArr, tprArr)) {
-      coordArr.push([
-        (Math.round(x * 1e3) / 1e3),
-        (Math.round(y * 1e3) / 1e3)
-      ]);
+  if (results.rocAUC.length) {
+  // Changes the fpr and tpr arrays into (rounded) coordinate arrays for the ROC curve chart...
+    for (let [fprArr, tprArr] of _.zip(results.fpr, results.tpr)) {
+      coordArr = []
+      for (let [x, y] of _.zip(fprArr, tprArr)) {
+        coordArr.push([
+          (Math.round(x * 1e3) / 1e3),
+          (Math.round(y * 1e3) / 1e3)
+        ]);
+      }
+      rocCurveData.push({ data: coordArr });
     }
-    rocCurveData.push({ data: coordArr });
-  }
-  // ...then adds class name to the chart data
-  for (let [i, category] of rocCurveData.entries()) {
-    rocCurveData[i]['name'] = results.classNames[i];
+    for (let [i, category] of rocCurveData.entries()) {
+      rocCurveData[i]['name'] = classNames[i];
+    }
+    // ...then adds class name to the chart data
+  } else {
+    rocCurveData.push({
+      data: _.zip(results.fpr, results.tpr),
+      name: [classNames[0]]});
   }
 
   const renderClassificationReport = () => {
     return roundedPrecRecFscoreSupport.map((pRFS, i) => {
       return (
         <tr key={i}>
-          <td><strong>{results.classNames[i]}</strong></td>
+          <td><strong>{classNames[i]}</strong></td>
           <td>{pRFS[0]}</td>
           <td>{pRFS[1]}</td>
           <td>{pRFS[2]}</td>
@@ -69,14 +76,14 @@ const Results = (props) => {
     },
 
     xAxis: {
-        categories: results.classNames,
+        categories: classNames,
         title: {
           text: '<b>Predicted class</b>'
         }
     },
 
     yAxis: {
-        categories: results.classNames,
+        categories: classNames,
         title: {
           text: '<b>True class</b>'
         }
@@ -120,10 +127,15 @@ const Results = (props) => {
         text: 'ROC Curve',
         x: -20 //center
     },
+    subtitle: {
+        text: 'Click on a class in the legend to show or hide it',
+        x: -20
+    },
     xAxis: {
         title: {
             text: 'False Positive Rate'
-        }
+        },
+        ceiling: 1
     },
     yAxis: {
         title: {
@@ -133,12 +145,20 @@ const Results = (props) => {
             value: 0,
             width: 1,
             color: '#808080'
-        }]
+        }],
+        ceiling: 1,
+        gridLineWidth: 0
     },
     tooltip: {
-        valueSuffix: ''
+        formatter: function () {
+            return 'FPR: <strong>' + this.point.x + '</strong><br>' + 
+            'TPR: <strong>' + this.point.y + '</strong>';
+        }
     },
     legend: {
+        title: {
+          text: 'Classes'
+        },
         layout: 'vertical',
         align: 'right',
         verticalAlign: 'middle',
@@ -150,12 +170,17 @@ const Results = (props) => {
   return (
     <div className="model-stats">
 
-      <h1>Results</h1>
+      <h1>Classification Prediction Results</h1>
       <hr />
       <ul className="list-unstyled">
         <li><h3>Model accuracy — <strong>{roundedScore}</strong></h3></li>
         <li><h3>Baseline accuracy — <strong>{roundedBaselineAcc}</strong></h3></li>
       </ul>
+      <hr />
+
+      <ReactHighcharts config={rocCurveConfig}></ReactHighcharts>
+      <hr />
+      <ReactHighcharts config={cnfMatrixConfig}></ReactHighcharts>
       <hr />
 
       <h4>Classification report:</h4>
@@ -173,10 +198,6 @@ const Results = (props) => {
           {renderClassificationReport()}
         </tbody>
       </table>
-
-      <hr />
-      <ReactHighcharts config={cnfMatrixConfig}></ReactHighcharts>
-      <ReactHighcharts config={rocCurveConfig}></ReactHighcharts>
 
     </div>
   );

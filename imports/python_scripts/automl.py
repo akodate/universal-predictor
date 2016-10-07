@@ -56,15 +56,24 @@ def get_ROC_values(class_names, y_test):
   y_bin = label_binarize(y_test, classes=encoded_class_names)
 
   # Compute ROC curve and ROC area for each class
-  fpr = []
-  tpr = []
-  roc_auc = []
-  for i in encoded_class_names:
-    f, t, _ = roc_curve(y_bin[:, i], probas[:, i])
-    fpr.append(f.tolist())
-    tpr.append(t.tolist())
-    roc_auc.append(auc(f, t))
-  return fpr, tpr, roc_auc
+  larger_class = 1
+  if len(encoded_class_names) == 2:
+    if np.sum(probas[:, 1]) > np.sum(probas[:, 0]):
+      larger_class = 1
+    fpr, tpr, _ = roc_curve(y_bin, probas[:, larger_class])
+    fpr = fpr.tolist()
+    tpr = tpr.tolist()
+    roc_auc = auc(fpr, tpr)
+  else:
+    fpr = []
+    tpr = []
+    roc_auc = []
+    for i in encoded_class_names:
+      f, t, _ = roc_curve(y_bin[:, i], probas[:, i])
+      fpr.append(f.tolist())
+      tpr.append(t.tolist())
+      roc_auc.append(auc(f, t))
+  return fpr, tpr, roc_auc, larger_class
 
 
 
@@ -100,7 +109,7 @@ try:
   y_test = LabelEncoder().fit_transform(y_test)
 
   automl = autosklearn.classification.AutoSklearnClassifier(time_left_for_this_task=time, 
-                                                            per_run_time_limit=1, 
+                                                            per_run_time_limit=int(time / 10), 
                                                             ml_memory_limit=10000)
   automl.fit(X_train, y_train)
 
@@ -110,7 +119,7 @@ try:
 
   baseline_acc = (mode(y_test)[1] / len(y_test))[0]
   precRecFscoreSupport = precision_recall_fscore_support(y_test, predictions)
-  fpr, tpr, roc_auc = get_ROC_values(class_names, y_test)
+  fpr, tpr, roc_auc, larger_class = get_ROC_values(class_names, y_test)
 
   print("***JSON***", flush=True)
   print(json.dumps({
@@ -127,7 +136,8 @@ try:
       'cnfMatrix': np.rot90(np.fliplr(confusion_matrix(y_test, predictions))).tolist(),
       'fpr': fpr,
       'tpr': tpr,
-      'roc_auc': roc_auc
+      'rocAUC': roc_auc,
+      'largerClass': larger_class
     }
   }), flush=True)
 
