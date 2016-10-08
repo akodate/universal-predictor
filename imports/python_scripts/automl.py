@@ -56,9 +56,9 @@ def get_ROC_values(class_names, y_test):
   y_bin = label_binarize(y_test, classes=encoded_class_names)
 
   # Compute ROC curve and ROC area for each class
-  larger_class = 1
+  larger_class = 0
   if len(encoded_class_names) == 2:
-    if np.sum(probas[:, 1]) > np.sum(probas[:, 0]):
+    if np.bincount(y_test)[0] < np.bincount(y_test)[1]:
       larger_class = 1
     fpr, tpr, _ = roc_curve(y_bin, probas[:, larger_class])
     fpr = fpr.tolist()
@@ -97,16 +97,12 @@ try:
       predictor_types.append('numerical')
 
   X = df.drop(target, axis=1)
+  X = np.ascontiguousarray(X)
   y = df[target]
-
   class_names = np.unique(y)
+  y = LabelEncoder().fit_transform(y)
 
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_set_size)
-
-  X_train = np.ascontiguousarray(X_train)
-  X_test = np.ascontiguousarray(X_test)
-  y_train = LabelEncoder().fit_transform(y_train)
-  y_test = LabelEncoder().fit_transform(y_test)
 
   automl = autosklearn.classification.AutoSklearnClassifier(time_left_for_this_task=time, 
                                                             per_run_time_limit=int(time / 10), 

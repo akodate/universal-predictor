@@ -46,7 +46,7 @@ const Results = (props) => {
   } else {
     rocCurveData.push({
       data: _.zip(results.fpr, results.tpr),
-      name: [classNames[0]]});
+      name: [classNames[results.largerClass]]});
   }
 
   const renderClassificationReport = () => {
@@ -173,8 +173,8 @@ const Results = (props) => {
       <h1>Classification Prediction Results</h1>
       <hr />
       <ul className="list-unstyled">
-        <li><h3>Model accuracy — <strong>{roundedScore}</strong></h3></li>
-        <li><h3>Baseline accuracy — <strong>{roundedBaselineAcc}</strong></h3></li>
+        <li><h3>Model score — <strong>{roundedScore}</strong></h3></li>
+        <li><h5>Adjusted for baseline accuracy of <strong>{roundedBaselineAcc}</strong></h5></li>
       </ul>
       <hr />
 
