@@ -46,7 +46,7 @@ const Results = (props) => {
   } else {
     rocCurveData.push({
       data: _.zip(results.fpr, results.tpr),
-      name: [classNames[results.largerClass]]});
+      name: [classNames[1]]});
   }
 
   const renderClassificationReport = () => {
