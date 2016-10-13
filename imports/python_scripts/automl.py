@@ -70,7 +70,7 @@ def get_ROC_values(class_names, y_test, probas):
   if len(encoded_class_names) == 2:
     fpr, tpr, roc_auc = get_binomial_ROC(y_bin, probas)
   else:
-    fpr, tpr, roc_auc = get_polynomial_ROC(y_bin, probas, encoded_class_names)
+    fpr, tpr, roc_auc = get_polynomial_ROC(y_bin, probas)
   return fpr, tpr, roc_auc
 
 def get_binomial_ROC(y_bin, probas):
@@ -80,11 +80,11 @@ def get_binomial_ROC(y_bin, probas):
   roc_auc = auc(fpr, tpr)
   return fpr, tpr, roc_auc
 
-def get_polynomial_ROC(y_bin, probas, encoded_class_names):
+def get_polynomial_ROC(y_bin, probas):
   fpr = []
   tpr = []
   roc_auc = []
-  for i in encoded_class_names:
+  for i in range(len(y_bin[0])):
     f, t, _ = roc_curve(y_bin[:, i], probas[:, i])
     fpr.append(f.tolist())
     tpr.append(t.tolist())
@@ -141,4 +141,3 @@ print(json.dumps({
     'rocAUC': roc_auc
   }
 }), flush=True)
-
