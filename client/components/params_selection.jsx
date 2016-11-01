@@ -9,26 +9,15 @@ class ParamsSelection extends Component {
   constructor(props) {
     super(props);
 
+    dfDescription = props.location.state;
+    colNames = dfDescription[0].slice(1)
+    results = {}
+
     this.state = { 
-      dfDescription: props.location.state,
-      colNames: [], 
-      results: {}
+      dfDescription,
+      colNames, 
+      results
     };
-  }
-
-  componentDidMount() {
-    this.getColumnNames();
-  }
-
-  getColumnNames() {
-    Meteor.call('getColNames', (error, result) => {
-      if (error) {
-        console.log(error);
-      } else {
-        const colNames = result;
-        this.setState({ colNames });
-      }
-    });
   }
 
   runAutoMLScript(event) {
@@ -99,7 +88,7 @@ class ParamsSelection extends Component {
           </form>
         </div>
 
-        <div className="model-stats" style={{overflow: 'scroll'}}>
+        <div className="model-stats">
           <SummaryStatistics dfDescription={this.state.dfDescription}/>
         </div>
       </div>

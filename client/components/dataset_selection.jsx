@@ -9,13 +9,13 @@ class DatasetSelection extends Component {
     super(props);
 
     this.state = {
-      dfDescription: false,
-      display: 'none'
+      dfDescription: false
     };
   }
 
   // TODO: File upload error handling (wrong filetype, file too large)
   // TODO: Dataset submit error handling (no dataset selected)
+  // TODO: Disable "Next" button until summary statistics arrive (or move function to SummaryStatistics)
 
   uploadFile(event) {
     const file = event.target.files[0]; 
@@ -56,7 +56,6 @@ class DatasetSelection extends Component {
       pathname: '/params_selection', 
       state: this.state.dfDescription
     });
-    // browserHistory.push('/params_selection');
   };
 
   render() {
@@ -67,14 +66,13 @@ class DatasetSelection extends Component {
           <form>
             <div className="form-group">
               <input type="file" id="exampleInputFile" onChange={(event) => this.uploadFile(event)} />
-              <p style={{display: this.state.display}}>ERROR</p>
               <em className="help-block small">(CSV only. Max file size is **MB)</em>
             </div>
           <button type="button" className="btn btn-lg btn-success center-block" onClick={() => this.goToParamsSelection()}>Next</button>
           </form>
         </div>
 
-        <div className="model-stats" style={{overflow: 'scroll'}}>
+        <div className="model-stats">
           {this.state.dfDescription && <SummaryStatistics dfDescription={this.state.dfDescription}/>}
         </div>
       </div>

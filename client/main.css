@@ -17,6 +17,7 @@
 
 .model-stats {
   margin: 15px 60px 10px;
+  overflow: scroll;
 }
 
 .param {
