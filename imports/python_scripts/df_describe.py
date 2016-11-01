@@ -28,9 +28,10 @@ def format_info(csv_path, df, test_set_size, orig_dtypes):
     dtype_info = "\n    ".join([(col + ": " + old.name + " -> " + new.name) for col, old, new in zip(df.columns, orig_dtypes, df.dtypes)])
   ))
 
-def generate_df_description_table(df_description):
+def generate_df_description_table(df_description, orig_dtypes):
   df_description_table = [row.tolist() for row in df_description.fillna(value='').as_matrix()]
   [df_description_table[i].insert(0, row_name) for i, row_name in enumerate(df_description.index)]
+  df_description_table.insert(0, ['TYPE'] + [dtype.name for dtype in orig_dtypes])
   df_description_table.insert(0, [''] + df_description.columns.tolist())
   df_description_table = [[np_to_python(value) for value in row] for row in df_description_table]
   return df_description_table
@@ -42,15 +43,12 @@ def np_to_python(value):
 
 
 
-# csv_path = sys.argv[1]
-csv_path = '/Users/alex/Projects/model_agency/datasets~/test.csv'
+csv_path = sys.argv[1]
 df = pd.read_csv(csv_path)
 orig_dtypes = df.dtypes
 df_description = df.describe(include='all')
-df_description_table = generate_df_description_table(df_description)
+df_description_table = generate_df_description_table(df_description, orig_dtypes)
 test_set_size = 0.2
-
-# class_names = np.unique(y)
 
 print("Description follows:")
 print("***JSON***", flush=True)
@@ -58,7 +56,6 @@ print(json.dumps({
   'info_log': format_info(csv_path, df, test_set_size, orig_dtypes),
   'results_log': "",
   'results': {
-    # 'classNames': class_names.tolist(),
     'dfDescription': df_description_table
   }
 }), flush=True)
