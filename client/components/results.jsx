@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import ReactHighcharts from 'react-highcharts';
 require('highcharts-more')(ReactHighcharts.Highcharts);
 require('highcharts-heatmap')(ReactHighcharts.Highcharts);
@@ -37,7 +36,7 @@ const Results = (props) => {
 
       <ReactHighcharts config={rocCurveConfig}></ReactHighcharts>
       <hr />
-      
+
       <ReactHighcharts config={cnfMatrixConfig}></ReactHighcharts>
       <hr />
 

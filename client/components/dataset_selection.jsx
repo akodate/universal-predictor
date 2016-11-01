@@ -1,11 +1,23 @@
 import React, { Component } from 'react';
 import { browserHistory } from 'react-router';
 
-const DatasetSelection = () => {
-  // TODO: File upload error handling (wrong filetype, file too large)
-  let display = 'none';
+import SummaryStatistics from './tables/summary_statistics';
 
-  const uploadFile = (event) => {
+class DatasetSelection extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      results: {},
+      display: 'none'
+    };
+  }
+
+  // TODO: File upload error handling (wrong filetype, file too large)
+  // TODO: Dataset submit error handling (no dataset selected)
+
+  uploadFile(event) {
     const file = event.target.files[0]; 
     console.log(file);
     if (!file) return;
@@ -14,7 +26,7 @@ const DatasetSelection = () => {
     xhr.open('POST', '/upload', true);
     xhr.onload = (event) => {
       console.log('done uploading!');
-      runDFDescribeScript()
+      this.runDFDescribeScript();
     };
 
     xhr.upload.onprogress = (event) => {
@@ -25,7 +37,7 @@ const DatasetSelection = () => {
     xhr.send(file);
   };
 
-  const runDFDescribeScript = () => {
+  runDFDescribeScript() {
     console.log('Running Python df_describe script...')
 
     Meteor.call('runPython', 'df_describe.py', (error, result) => {
@@ -34,31 +46,34 @@ const DatasetSelection = () => {
       } else {
         console.log(result.info_log);
         console.log(result.results);
-        // this.setState({ results: result.results });
+        this.setState({ results: result.results });
       }
     });
   }
 
-  const goToParamsSelection = () => {
+  goToParamsSelection() {
     browserHistory.push('/params_selection');
   };
 
-  // display = 'block';
-  // TODO: Dataset submit error handling (no dataset selected)
+  render() {
+    return (
+      <div className='container dataset-selection-form'>
+        <h1 className='text-center heading'>Select your cleaned dataset</h1>
+        <form>
+          <div className="form-group">
+            <input type="file" id="exampleInputFile" onChange={() => this.uploadFile} />
+            <p style={{display: this.state.display}}>ERROR</p>
+            <em className="help-block small">(CSV only. Max file size is **MB)</em>
+          </div>
+        <button type="button" className="btn btn-lg btn-success center-block" onClick={this.goToParamsSelection}>Next</button>
+        </form>
+        <hr />
 
-  return (
-    <div className='container dataset-selection-form'>
-      <h1 className='text-center heading'>Select your cleaned dataset</h1>
-      <form>
-        <div className="form-group">
-          <input type="file" id="exampleInputFile" onChange={uploadFile} />
-          <p style={{display: display}}>ERROR</p>
-          <em className="help-block small">(CSV only. Max file size is **MB)</em>
-        </div>
-      <button type="button" className="btn btn-lg btn-success center-block" onClick={goToParamsSelection}>Next</button>
-      </form>
-    </div>
-  );
+        <SummaryStatistics />
+
+      </div>
+    );
+  }
 };
 
 export default DatasetSelection;
