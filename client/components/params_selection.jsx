@@ -29,11 +29,11 @@ class ParamsSelection extends Component {
     });
   }
 
-  runPythonScript(event) {
+  runAutoMLScript(event) {
     event.preventDefault();
     const target = this.refs.target.value
     const time = this.refs.time.value  
-    console.log('Running python script...')  
+    console.log('Running Python automl script...')  
 
     Meteor.call('runPython', 'automl.py', target, time, (error, result) => {
       if (error) {
@@ -77,7 +77,7 @@ class ParamsSelection extends Component {
       <div className='container dataset-selection-form'>
         <h1 className='text-center heading'>Select model parameters</h1>
 
-        <form onSubmit={(event) => this.runPythonScript(event)}>
+        <form onSubmit={(event) => this.runAutoMLScript(event)}>
           <div className="form-group">
             <div className="form-inline param">
               <label htmlFor="target-selector">Target to predict:</label>

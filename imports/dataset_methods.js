@@ -21,7 +21,7 @@ Meteor.methods({
     return future.wait();
   },
 
-  'runPython': function(scriptName, target, time) {
+  'runPython': function(scriptName, target=false, time=false) {
     const future = new Future();
     const datasetPath = path.resolve('../../../../../datasets~/test.csv');
     const pythonPath = '/Users/alex/anaconda/envs/p3/bin/python'

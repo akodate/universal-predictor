@@ -14,6 +14,7 @@ const DatasetSelection = () => {
     xhr.open('POST', '/upload', true);
     xhr.onload = (event) => {
       console.log('done uploading!');
+      runDFDescribeScript()
     };
 
     xhr.upload.onprogress = (event) => {
@@ -21,8 +22,22 @@ const DatasetSelection = () => {
       console.log(percent+'% uploaded');
     };
 
-    xhr.send(file); 
+    xhr.send(file);
   };
+
+  const runDFDescribeScript = () => {
+    console.log('Running Python df_describe script...')
+
+    Meteor.call('runPython', 'df_describe.py', (error, result) => {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result.info_log);
+        console.log(result.results);
+        // this.setState({ results: result.results });
+      }
+    });
+  }
 
   const goToParamsSelection = () => {
     browserHistory.push('/params_selection');
