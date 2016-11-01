@@ -29,9 +29,9 @@ def format_info(csv_path, df, test_set_size, orig_dtypes):
   ))
 
 def generate_df_description_table(df_description):
-  df_description_table = [row.tolist() for row in df_description.fillna(value='N/A').as_matrix()]
+  df_description_table = [row.tolist() for row in df_description.fillna(value='').as_matrix()]
   [df_description_table[i].insert(0, row_name) for i, row_name in enumerate(df_description.index)]
-  df_description_table.insert(0, ['Statistic'] + df_description.columns.tolist())
+  df_description_table.insert(0, [''] + df_description.columns.tolist())
   df_description_table = [[np_to_python(value) for value in row] for row in df_description_table]
   return df_description_table
 
@@ -59,6 +59,6 @@ print(json.dumps({
   'results_log': "",
   'results': {
     # 'classNames': class_names.tolist(),
-    'df_description': df_description_table
+    'dfDescription': df_description_table
   }
 }), flush=True)

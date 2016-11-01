@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { browserHistory } from 'react-router';
 
+import SummaryStatistics from './tables/summary_statistics';
 import Results from './results';
 
 class ParamsSelection extends Component {
@@ -9,6 +10,7 @@ class ParamsSelection extends Component {
     super(props);
 
     this.state = { 
+      dfDescription: props.location.state,
       colNames: [], 
       results: {}
     };
@@ -74,27 +76,32 @@ class ParamsSelection extends Component {
 
   render() {
     return (
-      <div className='container dataset-selection-form'>
-        <h1 className='text-center heading'>Select model parameters</h1>
+      <div>
+        <div className='container dataset-selection-form'>
+          <h1 className='text-center heading'>Select model parameters</h1>
 
-        <form onSubmit={(event) => this.runAutoMLScript(event)}>
-          <div className="form-group">
-            <div className="form-inline param">
-              <label htmlFor="target-selector">Target to predict:</label>
-              <select ref='target' className="form-control param" id="target-selector">
-                {this.renderColumnNames()}
-              </select>
+          <form onSubmit={(event) => this.runAutoMLScript(event)}>
+            <div className="form-group">
+              <div className="form-inline param">
+                <label htmlFor="target-selector">Target to predict:</label>
+                <select ref='target' className="form-control param" id="target-selector">
+                  {this.renderColumnNames()}
+                </select>
+              </div>
+              <div className="form-inline param">
+                <label htmlFor="time-selector">Seconds to train model:</label>
+                <select ref='time' className="form-control param" id="time-selector">
+                  {this.renderTimeOptions()}
+                </select>
+              </div>                 
             </div>
-            <div className="form-inline param">
-              <label htmlFor="time-selector">Seconds to train model:</label>
-              <select ref='time' className="form-control param" id="time-selector">
-                {this.renderTimeOptions()}
-              </select>
-            </div>                 
-          </div>
-          <input type="submit" value="Create model!" className="btn btn-lg btn-success center-block" />
-        </form>
+            <input type="submit" value="Create model!" className="btn btn-lg btn-success center-block" />
+          </form>
+        </div>
 
+        <div className="model-stats" style={{overflow: 'scroll'}}>
+          <SummaryStatistics dfDescription={this.state.dfDescription}/>
+        </div>
       </div>
     );
   }
