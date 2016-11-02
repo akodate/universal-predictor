@@ -9,12 +9,14 @@ class ParamsSelection extends Component {
   constructor(props) {
     super(props);
 
-    dfDescription = props.location.state;
-    colNames = dfDescription[0].slice(1)
-    results = {}
+    dfDescription = props.location.state.dfDescription;
+    corrMatrix = props.location.state.corrMatrix;
+    colNames = dfDescription[0].slice(1);
+    results = {};
 
     this.state = { 
       dfDescription,
+      corrMatrix,
       colNames, 
       results
     };
@@ -88,8 +90,11 @@ class ParamsSelection extends Component {
           </form>
         </div>
 
-        <div className="model-stats">
-          <SummaryStatistics dfDescription={this.state.dfDescription}/>
+        <div>
+          {this.state.dfDescription && <SummaryStatistics 
+            corrMatrix={this.state.corrMatrix} 
+            dfDescription={this.state.dfDescription}
+          />}
         </div>
       </div>
     );

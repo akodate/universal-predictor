@@ -46,7 +46,10 @@ class DatasetSelection extends Component {
       } else {
         console.log(result.info_log);
         console.log(result.results);
-        this.setState({ dfDescription: result.results.dfDescription });
+        this.setState({ 
+          dfDescription: result.results.dfDescription, 
+          corrMatrix: result.results.corrMatrix
+        });
       }
     });
   }
@@ -54,7 +57,7 @@ class DatasetSelection extends Component {
   goToParamsSelection() {
     browserHistory.push({
       pathname: '/params_selection', 
-      state: this.state.dfDescription
+      state: this.state
     });
   };
 
@@ -72,8 +75,11 @@ class DatasetSelection extends Component {
           </form>
         </div>
 
-        <div className="model-stats">
-          {this.state.dfDescription && <SummaryStatistics dfDescription={this.state.dfDescription}/>}
+        <div>
+          {this.state.dfDescription && <SummaryStatistics 
+            corrMatrix={this.state.corrMatrix} 
+            dfDescription={this.state.dfDescription}
+          />}
         </div>
       </div>
     );

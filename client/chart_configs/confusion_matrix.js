@@ -46,10 +46,13 @@ const setCnfMatrixConfig = (cnfMatrix, classNames) => {
       maxColor: ReactHighcharts.Highcharts.getOptions().colors[0]
     },
 
+    credits: false,
+
     legend: {
       align: 'right',
       layout: 'vertical',
       margin: 0,
+      // navigation: false,
       verticalAlign: 'top',
       y: 25,
       symbolHeight: 280

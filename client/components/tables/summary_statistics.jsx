@@ -1,4 +1,9 @@
 import React, { Component } from 'react';
+import ReactHighcharts from 'react-highcharts';
+require('highcharts-more')(ReactHighcharts.Highcharts);
+require('highcharts-heatmap')(ReactHighcharts.Highcharts);
+
+import setCorrMatrixConfig from '../../chart_configs/correlation_matrix';
 
 const renderSummaryStatisticsHead = (dfDescription) => {
   return dfDescription[0].map((cell, i) => {
@@ -37,6 +42,11 @@ const roundSummaryStatistics = (dfDescription) => {
 const SummaryStatistics = (props) => {
   return (
     <div>
+
+      <hr />
+      <ReactHighcharts config={setCorrMatrixConfig(props.corrMatrix, props.dfDescription[0].slice(1))}></ReactHighcharts>
+    
+      <div className="model-stats">
       <hr />
       <h4>Summary statistics:</h4>
       <table className="table table-bordered">
@@ -49,6 +59,7 @@ const SummaryStatistics = (props) => {
           {renderSummaryStatisticsBody(props.dfDescription)}
         </tbody>
       </table>
+      </div>
     </div>
   );
 };

@@ -34,16 +34,19 @@ const setRocCurveConfig = (results, classNames) => {
         text: 'ROC Curve',
         x: -20 //center
     },
+
     subtitle: {
         text: 'Click on a class in the legend to show or hide it',
         x: -20
     },
+
     xAxis: {
         title: {
             text: 'False Positive Rate'
         },
         ceiling: 1
     },
+
     yAxis: {
         title: {
             text: 'True Positive Rate'
@@ -56,21 +59,27 @@ const setRocCurveConfig = (results, classNames) => {
         ceiling: 1,
         gridLineWidth: 0
     },
+
+    credits: false,
+
+    legend: {
+        title: {
+          text: 'Classes'
+        },
+        layout: 'vertical',
+        // navigation: false,
+        align: 'right',
+        verticalAlign: 'middle',
+        borderWidth: 0
+    },
+
     tooltip: {
         formatter: function () {
             return 'FPR: <strong>' + this.point.x + '</strong><br>' + 
             'TPR: <strong>' + this.point.y + '</strong>';
         }
     },
-    legend: {
-        title: {
-          text: 'Classes'
-        },
-        layout: 'vertical',
-        align: 'right',
-        verticalAlign: 'middle',
-        borderWidth: 0
-    },
+
     series: rocCurveData
   }
   return rocCurveConfig;
