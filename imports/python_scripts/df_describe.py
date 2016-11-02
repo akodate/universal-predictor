@@ -37,9 +37,15 @@ def generate_df_description_table(df_description, orig_dtypes):
   return df_description_table
 
 def np_to_python(value):
-    if isinstance(value, np.generic):
-        return np.asscalar(value)
-    return value
+  if isinstance(value, np.generic):
+    return np.asscalar(value)
+  return value
+
+def encode_binary_features(df):
+  for col in df.columns:
+    if len(df[col].unique()) == 2:
+      df[col] = LabelEncoder().fit_transform(df[col])
+  return df
 
 
 
@@ -56,6 +62,7 @@ print(json.dumps({
   'info_log': format_info(csv_path, df, test_set_size, orig_dtypes),
   'results_log': "",
   'results': {
-    'dfDescription': df_description_table
+    'dfDescription': df_description_table,
+    'corrMatrix': encode_binary_features(df).corr().as_matrix().tolist()
   }
 }), flush=True)
