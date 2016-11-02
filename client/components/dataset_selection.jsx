@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { browserHistory } from 'react-router';
 
-import SummaryStatistics from './tables/summary_statistics';
+import SummaryStatistics from './summary_statistics';
 
 class DatasetSelection extends Component {
 
