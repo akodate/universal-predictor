@@ -1,6 +1,12 @@
 import ReactHighcharts from 'react-highcharts';
 
-const setEnsembleTreemapConfig = () => {
+const setEnsembleTreemapConfig = (results, classNames) => {
+  let formattedEnsembleTreemapData = results.formattedEnsembleTreemapData
+  for (let [i, modelInfo] of results.formattedEnsembleTreemapData.entries()) {
+    formattedEnsembleTreemapData[i]['value'] = Math.round(modelInfo['value'] * 1e2) / 1e2;
+    formattedEnsembleTreemapData[i]['color'] = ReactHighcharts.Highcharts.getOptions().colors[i];
+  };
+
   const ensembleTreemapConfig = {
     chart: {
       type: 'treemap',
@@ -8,45 +14,25 @@ const setEnsembleTreemapConfig = () => {
       marginBottom: 80,
       plotBorderWidth: 1
     },
-    colorAxis: {
-        minColor: '#FFFFFF',
-        maxColor: ReactHighcharts.Highcharts.getOptions().colors[0]
-    },
+    credits: false,
+    legend: false,
     series: [{
-        // type: 'treemap',
-        layoutAlgorithm: 'squarified',
-        data: [{
-            name: 'A',
-            value: 6,
-            colorValue: 1
-        }, {
-            name: 'B',
-            value: 6,
-            colorValue: 2
-        }, {
-            name: 'C',
-            value: 4,
-            colorValue: 3
-        }, {
-            name: 'D',
-            value: 3,
-            colorValue: 4
-        }, {
-            name: 'E',
-            value: 2,
-            colorValue: 5
-        }, {
-            name: 'F',
-            value: 2,
-            colorValue: 6
-        }, {
-            name: 'G',
-            value: 1,
-            colorValue: 7
-        }]
+      // type: 'treemap',
+      layoutAlgorithm: 'squarified',
+      data: formattedEnsembleTreemapData
     }],
     title: {
-        text: 'Highcharts Treemap'
+      text: 'Model Weights'
+    },
+    tooltip: {
+      formatter: function () {
+        return '<strong>Weight: ' + this.point.value + '</strong><br>' +
+        '--------------<br>' + 
+        '<strong>Configuration</strong>: <br>' +
+        Object.keys(this.series.data[this.x].configuration).map((key) => 
+          key + ': ' + this.series.data[this.x].configuration[key]
+          ).join('<br>');
+      }
     }
   }
   return ensembleTreemapConfig;

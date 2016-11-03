@@ -24,7 +24,7 @@ const Results = (props) => {
 
   const cnfMatrixConfig = setCnfMatrixConfig(results.cnfMatrix, classNames);
   const rocCurveConfig = setRocCurveConfig(results, classNames);
-  const ensembleTreemapConfig = setEnsembleTreemapConfig();
+  const ensembleTreemapConfig = setEnsembleTreemapConfig(results, classNames);
 
   return (
     <div className="model-stats">

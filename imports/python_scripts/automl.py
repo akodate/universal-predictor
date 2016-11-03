@@ -112,6 +112,14 @@ def get_model_configuration(model):
   else:
     return {'code': model.configuration}
 
+def format_ensemble_treemap_data(ensemble_info):
+  return [{
+      'name': model_info['model_name'],
+      'value': model_info['weight'],
+      'configuration': model_info['configuration']
+    }
+    for i, model_info in enumerate(ensemble_info)]
+
 
 
 csv_path = sys.argv[1]
@@ -143,6 +151,7 @@ probas = automl.predict_proba(X_test)
 baseline_acc = (mode(y_test)[1] / len(y_test))[0]
 precRecFscoreSupport = precision_recall_fscore_support(y_test, predictions)
 fpr, tpr, roc_auc = get_ROC_values(class_names, y_test, probas)
+ensemble_info = get_automl_ensemble_info(automl)
 
 print("***JSON***", flush=True)
 print(json.dumps({
@@ -155,7 +164,8 @@ print(json.dumps({
     'predictions': predictions.tolist(),
     'probas': probas.tolist(),
     'classNames': class_names.tolist(),
-    'ensembleInfo': get_automl_ensemble_info(automl),
+    'ensembleInfo': ensemble_info,
+    'formattedEnsembleTreemapData': format_ensemble_treemap_data(ensemble_info),
     'precRecFscoreSupport': np.rot90(np.fliplr(precRecFscoreSupport)).tolist(),
     'cnfMatrix': np.rot90(np.fliplr(confusion_matrix(y_test, predictions))).tolist(),
     'fpr': fpr,
