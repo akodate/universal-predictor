@@ -91,6 +91,27 @@ def get_polynomial_ROC(y_bin, probas):
     roc_auc.append(auc(f, t))
   return fpr, tpr, roc_auc
 
+def get_automl_ensemble_info(automl):
+  return [{
+      'model_name': get_model_name(model[1]), 
+      'configuration': get_model_configuration(model[1]),
+      'weight': automl.ensemble_.weights_[i]
+    }
+    for i, model in enumerate(automl.models_.items())]
+
+def get_model_name(model):
+  config = get_model_configuration(model)
+  try: 
+    return config['classifier:__choice__']
+  except:
+    return model.__class__.__name__ if not 'MyDummyClassifier' else 'dummy_classifier'
+
+def get_model_configuration(model):
+  if type(model.configuration) != int:
+    return model.configuration.get_dictionary() 
+  else:
+    return {'code': model.configuration}
+
 
 
 csv_path = sys.argv[1]
@@ -134,6 +155,7 @@ print(json.dumps({
     'predictions': predictions.tolist(),
     'probas': probas.tolist(),
     'classNames': class_names.tolist(),
+    'ensembleInfo': get_automl_ensemble_info(automl),
     'precRecFscoreSupport': np.rot90(np.fliplr(precRecFscoreSupport)).tolist(),
     'cnfMatrix': np.rot90(np.fliplr(confusion_matrix(y_test, predictions))).tolist(),
     'fpr': fpr,

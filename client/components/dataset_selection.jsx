@@ -15,7 +15,6 @@ class DatasetSelection extends Component {
 
   // TODO: File upload error handling (wrong filetype, file too large)
   // TODO: Dataset submit error handling (no dataset selected)
-  // TODO: Disable "Next" button until summary statistics arrive (or move function to SummaryStatistics)
 
   uploadFile(event) {
     const file = event.target.files[0]; 
