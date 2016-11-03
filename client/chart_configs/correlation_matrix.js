@@ -1,7 +1,7 @@
 import ReactHighcharts from 'react-highcharts';
 
 const setCorrMatrixData = (corrMatrix) => {
-  // Formats confusion matrix as chart data
+  // Formats correlation matrix as chart data
   let corrMatrixData = [];
   for (let [i, col] of corrMatrix.entries()) {
     for (let [i2, x] of col.entries()) {

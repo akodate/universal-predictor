@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import ReactHighcharts from 'react-highcharts';
-require('highcharts-more')(ReactHighcharts.Highcharts);
+// require('highcharts-more')(ReactHighcharts.Highcharts);
 require('highcharts-heatmap')(ReactHighcharts.Highcharts);
+require('highcharts-treemap')(ReactHighcharts.Highcharts);
 
 import ClassificationReport from './tables/classification_report';
 import setCnfMatrixConfig from '../chart_configs/confusion_matrix';
 import setRocCurveConfig from '../chart_configs/roc_curve';
+import setEnsembleTreemapConfig from '../chart_configs/ensemble_treemap';
 
 const Results = (props) => {
   const results = props.location.state;
@@ -22,6 +24,7 @@ const Results = (props) => {
 
   const cnfMatrixConfig = setCnfMatrixConfig(results.cnfMatrix, classNames);
   const rocCurveConfig = setRocCurveConfig(results, classNames);
+  const ensembleTreemapConfig = setEnsembleTreemapConfig();
 
   return (
     <div className="model-stats">
@@ -41,6 +44,9 @@ const Results = (props) => {
       <hr />
 
       <ClassificationReport pRFS={roundedPrecRecFscoreSupport} classNames={classNames}/>
+      <hr />
+
+      <ReactHighcharts config={ensembleTreemapConfig}></ReactHighcharts>
 
     </div>
   );

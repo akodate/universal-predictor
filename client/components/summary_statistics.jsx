@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactHighcharts from 'react-highcharts';
-require('highcharts-more')(ReactHighcharts.Highcharts);
+// require('highcharts-more')(ReactHighcharts.Highcharts);
 require('highcharts-heatmap')(ReactHighcharts.Highcharts);
 
 import setCorrMatrixConfig from '../chart_configs/correlation_matrix';
