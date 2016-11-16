@@ -32,6 +32,10 @@
     "pretest": "npm run lint --silent"
   },
   "eslintConfig": {
+    "extends": [
+      "airbnb",
+      "plugin:meteor/recommended"
+    ],
     "parser": "babel-eslint",
     "parserOptions": {
       "allowImportExportEverywhere": true
@@ -39,13 +43,23 @@
     "plugins": [
       "meteor"
     ],
-    "extends": [
-      "airbnb",
-      "plugin:meteor/recommended"
-    ],
-    "settings": {
-      "import/resolver": "meteor"
+    "rules": {
+      "comma-dangle": ["error", {"functions": "ignore"}],
+      "max-len": "off",
+      "no-use-before-define": [ 2, { "functions": false } ],      
+      "prefer-const": 1,
+      "prefer-template": "off"
     },
-    "rules": {}
+    "settings": {
+      "import/resolver": {
+        "meteor": 
+        {
+          "extensions": [
+            ".js", 
+            ".jsx"
+          ]
+        }
+      }
+    }
   }
 }

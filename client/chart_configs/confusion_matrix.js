@@ -9,41 +9,42 @@ const setCnfMatrixData = (cnfMatrix) => {
     }
   }
   return cnfMatrixData;
-}
+};
 
 const setCnfMatrixConfig = (cnfMatrix, classNames) => {
   const cnfMatrixData = setCnfMatrixData(cnfMatrix);
 
+  /* eslint-disable comma-dangle */
   const cnfMatrixConfig = {
     chart: {
       type: 'heatmap',
       marginTop: 40,
       marginBottom: 80,
-      plotBorderWidth: 1
+      plotBorderWidth: 1,
     },
 
     title: {
-      text: 'Confusion Matrix'
+      text: 'Confusion Matrix',
     },
 
     xAxis: {
       categories: classNames,
       title: {
-        text: '<b>Predicted class</b>'
-      }
+        text: '<b>Predicted class</b>',
+      },
     },
 
     yAxis: {
       categories: classNames,
       title: {
-        text: '<b>True class</b>'
-      }
+        text: '<b>True class</b>',
+      },
     },
 
     colorAxis: {
       min: 0,
       minColor: '#FFFFFF',
-      maxColor: ReactHighcharts.Highcharts.getOptions().colors[0]
+      maxColor: ReactHighcharts.Highcharts.getOptions().colors[0],
     },
 
     credits: false,
@@ -55,14 +56,14 @@ const setCnfMatrixConfig = (cnfMatrix, classNames) => {
       // navigation: false,
       verticalAlign: 'top',
       y: 25,
-      symbolHeight: 280
+      symbolHeight: 280,
     },
 
     tooltip: {
-      formatter: function () {
-        return '<strong>' + this.point.value + '</strong> predicted as class <strong>' + this.series.xAxis.categories[this.point.x] + '</strong><br>' + 
+      formatter() {
+        return '<strong>' + this.point.value + '</strong> predicted as class <strong>' + this.series.xAxis.categories[this.point.x] + '</strong><br>' +
           'that are actually class <strong>' + this.series.yAxis.categories[this.point.y] + '</strong>';
-      }
+      },
     },
 
     series: [{
@@ -71,10 +72,11 @@ const setCnfMatrixConfig = (cnfMatrix, classNames) => {
       data: cnfMatrixData,
       dataLabels: {
         enabled: true,
-        color: '#000000'
-      }
-    }]
+        color: '#000000',
+      },
+    }],
   };
+  /* eslint-enable comma-dangle */
   return cnfMatrixConfig;
 };
 

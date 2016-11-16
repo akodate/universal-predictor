@@ -1,9 +1,8 @@
 import React from 'react';
 
-export default (props) => {
-  return (
+export default props =>
+  (
     <div>
       {props.children}
     </div>
   );
-};

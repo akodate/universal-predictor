@@ -17,6 +17,6 @@ const routes = (
   </Router>
 );
 
-Meteor.startup(() => {
-  ReactDOM.render(routes, document.querySelector('.render-target'));
+Meteor.startup(() => { // eslint-disable-line no-undef
+  ReactDOM.render(routes, document.querySelector('.render-target')); // eslint-disable-line no-undef
 });
