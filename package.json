@@ -2,9 +2,11 @@
   "name": "model_agency",
   "private": true,
   "scripts": {
-    "start": "meteor run"
+    "lint": "eslint .",
+    "pretest": "npm run lint --silent"
   },
   "dependencies": {
+    "babel-runtime": "^6.18.0",
     "csv-parse": "^1.1.7",
     "fibers": "^1.0.14",
     "future": "^2.3.1",
@@ -27,10 +29,6 @@
     "eslint-plugin-meteor": "^4.0.1",
     "eslint-plugin-react": "^6.7.1"
   },
-  "scripts": {
-    "lint": "eslint .",
-    "pretest": "npm run lint --silent"
-  },
   "eslintConfig": {
     "extends": [
       "airbnb",
@@ -44,18 +42,27 @@
       "meteor"
     ],
     "rules": {
-      "comma-dangle": ["error", {"functions": "ignore"}],
+      "comma-dangle": [
+        "error",
+        {
+          "functions": "ignore"
+        }
+      ],
       "max-len": "off",
-      "no-use-before-define": [ 2, { "functions": false } ],      
+      "no-use-before-define": [
+        2,
+        {
+          "functions": false
+        }
+      ],
       "prefer-const": 1,
       "prefer-template": "off"
     },
     "settings": {
       "import/resolver": {
-        "meteor": 
-        {
+        "meteor": {
           "extensions": [
-            ".js", 
+            ".js",
             ".jsx"
           ]
         }
